@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten"
+
+	"github.com/zenwerk/go-pixelman3/sprite"
 )
 
 var player_anim0 = `------+++++-----
@@ -59,37 +61,22 @@ var player_anim2 = `------+++++-----
 ---++----+++++--
 --+++++---------`
 
-var spikes_img = `--+---+---+---+-
---+---+---+---+-
---+---+---+---+-
---+---+---+---+-
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
--+++-+++-+++-+++
+var block_img = `++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
+++++++++++++++++
 ++++++++++++++++
 ++++++++++++++++
 ++++++++++++++++
 ++++++++++++++++`
-
-var ghostie_img = `------+++++-----
-----+++++++++---
----+++++++++++--
---+++++++++++++-
--+++++--+++--++-
-+++++++--+--++++
-++++++++-+-+++++
-++++++++++++++++
--++++-+++++++-++
---++++--+++--++-
----+++++---++++-
-----++++++++++--
------++++++++---
--------++++-----`
 
 var (
 	charWidth   = 16
@@ -98,8 +85,7 @@ var (
 	playerAnim0 *ebiten.Image
 	playerAnim1 *ebiten.Image
 	playerAnim2 *ebiten.Image
-	//spikesImg   *ebiten.Image
-	//ghostieImg  *ebiten.Image
+	blockImg    *ebiten.Image
 )
 
 func createImageFromString(charString string, img *image.RGBA) {
@@ -121,80 +107,9 @@ func createImageFromString(charString string, img *image.RGBA) {
 	}
 }
 
-type position struct {
-	X int
-	Y int
-}
-
-type Sprite struct {
-	Images     []*ebiten.Image
-	ImageNum   int
-	CurrentNum int
-	Position   position
-	count      int
-}
-
-func NewSprite(images []*ebiten.Image) *Sprite {
-	return &Sprite{
-		Images:   images,
-		ImageNum: len(images),
-	}
-}
-
-func (s *Sprite) currentImage() *ebiten.Image {
-	if s.count > 15 {
-		s.count = 0
-		s.CurrentNum++
-		s.CurrentNum %= (s.ImageNum)
-	}
-	return s.Images[s.CurrentNum]
-}
-
-func (s *Sprite) Move() {
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		s.Position.X -= 1
-		s.count++
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		s.Position.X += 1
-		s.count++
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
-		s.Position.Y -= 1
-		s.count++
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyDown) {
-		s.Position.Y += 1
-		s.count++
-	}
-}
-
-func (s *Sprite) DrawImage(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(s.Position.X), float64(s.Position.Y))
-	screen.DrawImage(s.currentImage(), op)
-}
-
-//func update(screen *ebiten.Image) error {
-//	if ebiten.IsRunningSlowly() {
-//		return nil
-//	}
-//	op := &ebiten.DrawImageOptions{}
-//	op.GeoM.Translate(0, 0)
-//	screen.DrawImage(playerAnim0, op)
-//	op.GeoM.Translate(16, 0)
-//	screen.DrawImage(playerAnim1, op)
-//	op.GeoM.Translate(16, 0)
-//	screen.DrawImage(playerAnim2, op)
-//	op.GeoM.Translate(16, 0)
-//	screen.DrawImage(spikesImg, op)
-//	op.GeoM.Translate(16, 0)
-//	screen.DrawImage(ghostieImg, op)
-//	return nil
-//}
-
 type Game struct {
-	Char *Sprite
+	Player *sprite.Player
+	Blocks []*sprite.Block
 }
 
 func (g *Game) Init() {
@@ -212,33 +127,46 @@ func (g *Game) Init() {
 	playerAnim2, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim2.ReplacePixels(tmpImage.Pix)
 
-	//createImageFromString(spikes_img, tmpImage)
-	//spikesImg, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
-	//spikesImg.ReplacePixels(tmpImage.Pix)
+	createImageFromString(block_img, tmpImage)
+	blockImg, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
+	blockImg.ReplacePixels(tmpImage.Pix)
 
-	//createImageFromString(ghostie_img, tmpImage)
-	//ghostieImg, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
-	//ghostieImg.ReplacePixels(tmpImage.Pix)
-
+	// プレイヤー
 	images := []*ebiten.Image{
 		playerAnim0,
 		playerAnim1,
 		playerAnim2,
 	}
+	g.Player = sprite.NewPlayer(images)
+	g.Player.Position.X = 10
+	g.Player.Position.Y = 10
 
-	g.Char = NewSprite(images)
-	g.Char.Position.X = 10
-	g.Char.Position.Y = 10
+	// ブロック
+	block1 := sprite.NewBlock([]*ebiten.Image{blockImg})
+	block1.Position.X = 100
+	block1.Position.Y = 50
+	block2 := sprite.NewBlock([]*ebiten.Image{blockImg})
+	block2.Position.X = 200
+	block2.Position.Y = 100
+
+	g.Blocks = []*sprite.Block{
+		block1,
+		block2,
+	}
 }
 
 func (g *Game) MainLoop(screen *ebiten.Image) error {
-	g.Char.Move()
+	g.Player.Move([]sprite.Sprite{g.Blocks[0], g.Blocks[1]})
 
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
 
-	g.Char.DrawImage(screen)
+	g.Player.DrawImage(screen)
+	for _, block := range g.Blocks {
+		block.DrawImage(screen)
+	}
+
 	return nil
 }
 
