@@ -40,9 +40,9 @@ func (s *BaseSprite) currentImage() *ebiten.Image {
 	return s.Images[s.CurrentNum]
 }
 
-func (s *BaseSprite) DrawImage(screen *ebiten.Image) {
+func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort position) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(s.Position.X), float64(s.Position.Y))
+	op.GeoM.Translate(float64(s.Position.X+viewPort.X), float64(s.Position.Y+viewPort.Y))
 	screen.DrawImage(s.currentImage(), op)
 }
 

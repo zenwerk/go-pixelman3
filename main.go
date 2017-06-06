@@ -138,33 +138,50 @@ func (g *Game) Init() {
 		playerAnim2,
 	}
 	g.Player = sprite.NewPlayer(images)
-	g.Player.Position.X = 10
-	g.Player.Position.Y = 10
+	g.Player.Position.X = 160
+	g.Player.Position.Y = 50
 
 	// ブロック
 	// 床
-	for x := 0; x < 320; x += 17 {
+	for x := 0; x < 640; x += 17 {
 		block := sprite.NewBlock([]*ebiten.Image{blockImg})
 		block.Position.X = x
-		block.Position.Y = 200
+		block.Position.Y = 204
 		g.Blocks = append(g.Blocks, block)
 	}
+
+	// 左の壁
+	for y := 0; y < 200; y += 17 {
+		block := sprite.NewBlock([]*ebiten.Image{blockImg})
+		block.Position.X = 0
+		block.Position.Y = y
+		g.Blocks = append(g.Blocks, block)
+	}
+
+	// 右の壁
+	for y := 0; y < 200; y += 17 {
+		block := sprite.NewBlock([]*ebiten.Image{blockImg})
+		block.Position.X = 629
+		block.Position.Y = y
+		g.Blocks = append(g.Blocks, block)
+	}
+
 	// 第2床
 	for x := 8 * 17; x < 17*13; x += 17 {
 		block := sprite.NewBlock([]*ebiten.Image{blockImg})
 		block.Position.X = x
-		block.Position.Y = 110
+		block.Position.Y = 115
 		g.Blocks = append(g.Blocks, block)
 	}
 
 	block1 := sprite.NewBlock([]*ebiten.Image{blockImg})
 	block1.Position.X = 60
-	block1.Position.Y = 160
+	block1.Position.Y = 165
 	g.Blocks = append(g.Blocks, block1)
 
 	block2 := sprite.NewBlock([]*ebiten.Image{blockImg})
-	block2.Position.X = 90
-	block2.Position.Y = 130
+	block2.Position.X = 95
+	block2.Position.Y = 135
 	g.Blocks = append(g.Blocks, block2)
 
 }
@@ -182,7 +199,7 @@ func (g *Game) MainLoop(screen *ebiten.Image) error {
 
 	g.Player.DrawImage(screen)
 	for _, block := range g.Blocks {
-		block.DrawImage(screen)
+		block.DrawImage(screen, g.Player.ViewPort)
 	}
 
 	return nil

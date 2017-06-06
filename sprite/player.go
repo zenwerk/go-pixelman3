@@ -6,6 +6,13 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
+const (
+	xLeftLimit  = 16 * 3         // 左方向移動の画面上の限界
+	xRightLimit = 320 - (16 * 3) // 右方向移動の画面上の限界
+	yUpperLimit = 16 * 2         // 上方向移動の画面上の限界
+	yLowerLimit = 240 - (16 * 2) // 下方向移動の画面上の限界
+)
+
 // 四捨五入関数
 func round(f float64) int {
 	return int(math.Floor(f + .5))
@@ -21,9 +28,10 @@ func isOverlap(x1, x2, x3, x4 int) bool {
 
 type Player struct {
 	BaseSprite
-	jumping   bool    // 現在ジャンプ中か
-	jumpSpeed float64 // 現在のジャンプ力
-	fallSpeed float64 // 落下速度
+	jumping   bool     // 現在ジャンプ中か
+	jumpSpeed float64  // 現在のジャンプ力
+	fallSpeed float64  // 落下速度
+	ViewPort  position // スクリーン上の相対座標
 }
 
 func NewPlayer(images []*ebiten.Image) *Player {
@@ -68,8 +76,21 @@ func (p *Player) Move(objects []Sprite) {
 		dx, dy = p.IsCollide(dx, dy, object)
 	}
 
-	p.Position.X += dx
-	p.Position.Y += dy
+	// 画面上の左右の移動限界に達しているか確認する
+	if p.Position.X+dx < xLeftLimit || p.Position.X+dx > xRightLimit {
+		// 移動限界に達しているなら相対座標を更新する
+		// 他のオブジェクトがプレイヤーが移動する方向の逆方向に進んで欲しいので反転して(-=)代入する
+		p.ViewPort.X -= dx
+	} else {
+		// 移動限界に達していないなら自身の絶対座標を更新する
+		p.Position.X += dx
+	}
+
+	if p.Position.Y+dy < yUpperLimit || p.Position.Y+dy > yLowerLimit {
+		p.ViewPort.Y -= dy
+	} else {
+		p.Position.Y += dy
+	}
 }
 
 // IsCollide はプレイヤーが対象の object と衝突しているか判定する
@@ -82,6 +103,10 @@ func (p *Player) IsCollide(dx, dy int, object Sprite) (int, int) {
 
 	// 対象のオブジェクトの x,y座標の位置と幅と高さを取得する
 	x1, y1, w1, h1 := object.GetCordinates()
+
+	// 対象オブジェクトは相対座標付与して衝突判定を行う
+	x1 += p.ViewPort.X
+	y1 += p.ViewPort.Y
 
 	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
 	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
@@ -114,4 +139,10 @@ func (p *Player) IsCollide(dx, dy int, object Sprite) (int, int) {
 	}
 
 	return dx, dy
+}
+
+func (p *Player) DrawImage(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
+	screen.DrawImage(p.currentImage(), op)
 }
