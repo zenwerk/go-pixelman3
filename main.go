@@ -3,11 +3,11 @@ package main
 import (
 	"image"
 	"log"
-	"strings"
 
 	"github.com/hajimehoshi/ebiten"
 
 	"github.com/zenwerk/go-pixelman3/sprite"
+	"github.com/zenwerk/go-pixelman3/utils"
 )
 
 var player_anim0 = `------+++++-----
@@ -88,25 +88,6 @@ var (
 	blockImg    *ebiten.Image
 )
 
-func createImageFromString(charString string, img *image.RGBA) {
-	for indexY, line := range strings.Split(charString, "\n") {
-		for indexX, str := range line {
-			pos := 4*indexY*charWidth + 4*indexX
-			if string(str) == "+" {
-				img.Pix[pos] = 0xff   // R
-				img.Pix[pos+1] = 0xff // G
-				img.Pix[pos+2] = 0xff // B
-				img.Pix[pos+3] = 0xff // A
-			} else {
-				img.Pix[pos] = 0
-				img.Pix[pos+1] = 0
-				img.Pix[pos+2] = 0
-				img.Pix[pos+3] = 0
-			}
-		}
-	}
-}
-
 type Game struct {
 	Player *sprite.Player
 	Blocks []*sprite.Block
@@ -115,19 +96,19 @@ type Game struct {
 func (g *Game) Init() {
 	tmpImage = image.NewRGBA(image.Rect(0, 0, charWidth, charHeight))
 
-	createImageFromString(player_anim0, tmpImage)
+	utils.CreateImageFromString(player_anim0, tmpImage)
 	playerAnim0, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim0.ReplacePixels(tmpImage.Pix)
 
-	createImageFromString(player_anim1, tmpImage)
+	utils.CreateImageFromString(player_anim1, tmpImage)
 	playerAnim1, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim1.ReplacePixels(tmpImage.Pix)
 
-	createImageFromString(player_anim2, tmpImage)
+	utils.CreateImageFromString(player_anim2, tmpImage)
 	playerAnim2, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim2.ReplacePixels(tmpImage.Pix)
 
-	createImageFromString(block_img, tmpImage)
+	utils.CreateImageFromString(block_img, tmpImage)
 	blockImg, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	blockImg.ReplacePixels(tmpImage.Pix)
 
