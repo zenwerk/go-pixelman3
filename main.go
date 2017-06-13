@@ -173,12 +173,17 @@ func (g *Game) MainLoop(screen *ebiten.Image) error {
 		sprites = append(sprites, b)
 	}
 	g.Player.Move(sprites)
+	g.Player.Action()
+	g.Player.PlayerBalls.Move(g.Player.ViewPort)
 
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
 
 	g.Player.DrawImage(screen)
+	for _, ball := range g.Player.PlayerBalls {
+		ball.DrawImage(screen, g.Player.ViewPort)
+	}
 	for _, block := range g.Blocks {
 		block.DrawImage(screen, g.Player.ViewPort)
 	}

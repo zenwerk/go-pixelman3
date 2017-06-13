@@ -28,10 +28,11 @@ func isOverlap(x1, x2, x3, x4 int) bool {
 
 type Player struct {
 	BaseSprite
-	jumping   bool     // 現在ジャンプ中か
-	jumpSpeed float64  // 現在のジャンプ力
-	fallSpeed float64  // 落下速度
-	ViewPort  position // スクリーン上の相対座標
+	jumping     bool     // 現在ジャンプ中か
+	jumpSpeed   float64  // 現在のジャンプ力
+	fallSpeed   float64  // 落下速度
+	ViewPort    position // スクリーン上の相対座標
+	PlayerBalls Balls
 }
 
 func NewPlayer(images []*ebiten.Image) *Player {
@@ -90,6 +91,17 @@ func (p *Player) Move(objects []Sprite) {
 		p.ViewPort.Y -= dy
 	} else {
 		p.Position.Y += dy
+	}
+}
+
+func (p *Player) Action() {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		pos := position{
+			X: (p.Position.X - p.ViewPort.X) + 8,
+			Y: (p.Position.Y - p.ViewPort.Y) + 4,
+		}
+		ball := NewBall(pos)
+		p.PlayerBalls = append(p.PlayerBalls, ball)
 	}
 }
 
