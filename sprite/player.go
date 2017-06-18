@@ -3,7 +3,10 @@ package sprite
 import (
 	"math"
 
+	"image"
+
 	"github.com/hajimehoshi/ebiten"
+	"github.com/zenwerk/go-pixelman3/utils"
 )
 
 const (
@@ -11,7 +14,83 @@ const (
 	xRightLimit = 320 - (16 * 3) // 右方向移動の画面上の限界
 	yUpperLimit = 16 * 2         // 上方向移動の画面上の限界
 	yLowerLimit = 240 - (16 * 2) // 下方向移動の画面上の限界
+
+	charWidth  = 16
+	charHeight = 16
+
+	player_anim0 = `------+++++-----
+----+++++++++---
+---+++++++++++--
+--+++++++++++++-
+--++++--+++--++-
+-+++++--+++--++-
++++++++++++++++-
+++++++++++++++++
+++++++++++++++++
+++++++-+++++-+++
++++++++-----++++
++-++++++++++++++
+--++++++++++++-+
+---++++++++++---
+---++-----++----
+--+++++--+++++--`
+
+	player_anim1 = `------+++++-----
+----+++++++++---
+---+++++++++++--
+--+++++++++++++-
+--++++--+++--++-
+-+++++--+++--++-
++++++++++++++++-
+++++++++++++++++
+++++++++++++++++
+++++++-+++++-+++
++++++++-----++++
++-++++++++++++++
+--++++++++++++-+
+---++++++++++---
+--+++++---++----
+---------+++++--`
+
+	player_anim2 = `------+++++-----
+----+++++++++---
+---+++++++++++--
+--+++++++++++++-
+--++++--+++--++-
+-+++++--+++--++-
++++++++++++++++-
+++++++++++++++++
+++++++++++++++++
+++++++-+++++-+++
++++++++-----++++
++-++++++++++++++
+--++++++++++++-+
+---++++++++++---
+---++----+++++--
+--+++++---------`
 )
+
+var (
+	playerAnim0 *ebiten.Image
+	playerAnim1 *ebiten.Image
+	playerAnim2 *ebiten.Image
+)
+
+func init() {
+	tmpImage := image.NewRGBA(image.Rect(0, 0, charWidth, charHeight))
+
+	utils.CreateImageFromString(player_anim0, tmpImage)
+	playerAnim0, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
+	playerAnim0.ReplacePixels(tmpImage.Pix)
+
+	utils.CreateImageFromString(player_anim1, tmpImage)
+	playerAnim1, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
+	playerAnim1.ReplacePixels(tmpImage.Pix)
+
+	utils.CreateImageFromString(player_anim2, tmpImage)
+	playerAnim2, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
+	playerAnim2.ReplacePixels(tmpImage.Pix)
+}
 
 // 四捨五入関数
 func round(f float64) int {
@@ -35,10 +114,14 @@ type Player struct {
 	PlayerBalls Balls
 }
 
-func NewPlayer(images []*ebiten.Image) *Player {
+func NewPlayer() *Player {
 	player := new(Player)
-	player.Images = images
-	player.ImageNum = len(images)
+	player.Images = []*ebiten.Image{
+		playerAnim0,
+		playerAnim1,
+		playerAnim2,
+	}
+	player.ImageNum = len(player.Images)
 	player.jumpSpeed = 0
 	player.fallSpeed = 0.4
 	return player
