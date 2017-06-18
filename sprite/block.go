@@ -41,7 +41,6 @@ func init() {
 	utils.CreateImageFromString(block_img, tmpImage)
 	blockImg, _ = ebiten.NewImage(blockWidth, blockHeight, ebiten.FilterNearest)
 	blockImg.ReplacePixels(tmpImage.Pix)
-
 }
 
 func NewBlock() *Block {
