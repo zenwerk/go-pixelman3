@@ -110,7 +110,7 @@ type Player struct {
 	jumping     bool     // 現在ジャンプ中か
 	jumpSpeed   float64  // 現在のジャンプ力
 	fallSpeed   float64  // 落下速度
-	ViewPort    position // スクリーン上の相対座標
+	ViewPort    Position // スクリーン上の相対座標
 	PlayerBalls Balls
 }
 
@@ -179,7 +179,7 @@ func (p *Player) Move(objects []Sprite) {
 
 func (p *Player) Action() {
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		pos := position{
+		pos := Position{
 			X: (p.Position.X - p.ViewPort.X) + 8,
 			Y: (p.Position.Y - p.ViewPort.Y) + 4,
 		}

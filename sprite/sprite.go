@@ -6,9 +6,10 @@ import (
 
 type Sprite interface {
 	GetCordinates() (int, int, int, int)
+	DrawImage(*ebiten.Image, Position)
 }
 
-type position struct {
+type Position struct {
 	X int
 	Y int
 }
@@ -17,7 +18,7 @@ type BaseSprite struct {
 	Images     []*ebiten.Image // アニメーションさせる画像の配列
 	ImageNum   int             // 総イメージ数
 	CurrentNum int             // 現在何枚目の画像が表示されているか
-	Position   position        // 現在表示されている位置
+	Position   Position        // 現在表示されている位置
 	count      int             // フレーム数のカウンター
 }
 
@@ -40,7 +41,7 @@ func (s *BaseSprite) currentImage() *ebiten.Image {
 	return s.Images[s.CurrentNum]
 }
 
-func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort position) {
+func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort Position) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(s.Position.X+viewPort.X), float64(s.Position.Y+viewPort.Y))
 	screen.DrawImage(s.currentImage(), op)

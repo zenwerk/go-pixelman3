@@ -34,7 +34,7 @@ type Ball struct {
 	BaseSprite
 }
 
-func NewBall(pos position) *Ball {
+func NewBall(pos Position) *Ball {
 	ball := new(Ball)
 	ball.Images = []*ebiten.Image{
 		ballImg,
@@ -44,7 +44,7 @@ func NewBall(pos position) *Ball {
 	return ball
 }
 
-func (bs *Balls) Move(viewport position) {
+func (bs *Balls) Move(viewport Position) {
 	balls := *bs
 
 	for i := 0; i < len(balls); i++ {
