@@ -3,7 +3,9 @@ package sprite
 import (
 	"image"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/hajimehoshi/ebiten"
+
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
@@ -50,4 +52,28 @@ func NewBlock() *Block {
 	}
 	block.ImageNum = len(block.Images)
 	return block
+}
+
+func (b *Block) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+	switch v := object.(type) {
+	case *Player:
+		b.collidePlayer(v, dx, dy, cm)
+	default:
+		log.Warn("unknown type")
+	}
+}
+
+func (b *Block) collidePlayer(p *Player, dx, dy *int, cm *CollideMap) {
+	if cm.Left || cm.Right {
+		*dx = 0
+	}
+	if cm.Top {
+		*dy = 0
+	}
+	if cm.Bottom {
+		*dy = 0
+		// ジャンプ中フラグをオフにする
+		p.jumping = false
+		p.jumpSpeed = 0
+	}
 }

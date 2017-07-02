@@ -2,16 +2,30 @@ package sprite
 
 import (
 	"github.com/hajimehoshi/ebiten"
+	log "github.com/sirupsen/logrus"
 )
 
 type Sprite interface {
-	GetCordinates() (int, int, int, int)
+	GetCoordinates() (int, int, int, int)
 	DrawImage(*ebiten.Image, Position)
+	Collision(Sprite, *int, *int, *CollideMap)
 }
 
 type Position struct {
 	X int
 	Y int
+}
+
+// CollideMap は Sprite が上下左右で衝突しているかを表す
+type CollideMap struct {
+	Left   bool
+	Right  bool
+	Top    bool
+	Bottom bool
+}
+
+func (cm *CollideMap) HasCollision() bool {
+	return cm.Left || cm.Right || cm.Top || cm.Bottom
 }
 
 type BaseSprite struct {
@@ -47,7 +61,11 @@ func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort Position) {
 	screen.DrawImage(s.currentImage(), op)
 }
 
-func (s *BaseSprite) GetCordinates() (int, int, int, int) {
+func (s *BaseSprite) GetCoordinates() (int, int, int, int) {
 	w, h := s.currentImage().Size()
 	return s.Position.X, s.Position.Y, w, h
+}
+
+func (s *BaseSprite) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+	log.Info("overwrite this method.")
 }

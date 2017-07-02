@@ -1,22 +1,22 @@
-memo = "50648c936c14b38cd382f68d50fcb0a22229eb979751d36dfaf6f8a7ee67ecad"
+memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-gl/gl"
   packages = ["v2.1/gl"]
-  revision = "887577e03012940ff715b6af70a9ea1b9f9e60bb"
+  revision = "39ef8e959f4050148ec5a59816a93b9e65b4528f"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
-  revision = "45517cf5568747f99bb4b0b4abae9fa3cd5f85ed"
+  revision = "55847fe4ded3fbee15191a625f3305a1fad48b67"
 
 [[projects]]
   branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js","nosync"]
-  revision = "7cde3d36aea3e1b3be7827c4dcbe6bbae73d012e"
+  revision = "2b1d432c8a82c9bff0b0baffaeb3ec6e92974112"
 
 [[projects]]
   branch = "master"
@@ -28,16 +28,22 @@ memo = "50648c936c14b38cd382f68d50fcb0a22229eb979751d36dfaf6f8a7ee67ecad"
   branch = "master"
   name = "github.com/hajimehoshi/ebiten"
   packages = [".","internal","internal/affine","internal/endian","internal/graphics","internal/jni","internal/loop","internal/opengl","internal/restorable","internal/sync","internal/ui"]
-  revision = "b526aed81783ef596d552a63622111b3ab6c6754"
+  revision = "46a3f1530eafd2e871b99ea62a922420807cfe5f"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "202f25545ea4cf9b191ff7f846df5d87c9382c2b"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/mobile"
   packages = ["gl"]
-  revision = "44a54e9b78442c0a8233ee2d552c61da88e053c3"
+  revision = "e1125eeafdfd3d7bb12356c66761000bf749bb64"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["windows"]
-  revision = "b90f89a1e7a9c1f6b918820b3daa7f08488c8594"
+  packages = ["unix","windows"]
+  revision = "d18155cb60f6162f5e706d7f26e4e50a3d4da857"

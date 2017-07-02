@@ -4,6 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 
 	"github.com/zenwerk/go-pixelman3/field"
+	"github.com/zenwerk/go-pixelman3/sprite"
 )
 
 type Game struct {
@@ -23,7 +24,7 @@ func (g *Game) MainLoop(screen *ebiten.Image) error {
 		return nil
 	}
 
-	g.Field.Player.DrawImage(screen)
+	g.Field.Player.DrawImage(screen, sprite.Position{})
 	for _, ball := range g.Field.Player.PlayerBalls {
 		ball.DrawImage(screen, g.Field.Player.ViewPort)
 	}

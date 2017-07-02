@@ -1,11 +1,11 @@
 package sprite
 
 import (
+	"image"
 	"math"
 
-	"image"
-
 	"github.com/hajimehoshi/ebiten"
+
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
@@ -157,7 +157,7 @@ func (p *Player) Move(objects []Sprite) {
 	dy = round(p.jumpSpeed)
 
 	for _, object := range objects {
-		dx, dy = p.IsCollide(dx, dy, object)
+		p.IsCollide(&dx, &dy, object)
 	}
 
 	// 画面上の左右の移動限界に達しているか確認する
@@ -188,8 +188,11 @@ func (p *Player) Action() {
 	}
 }
 
+// TODO: 衝突判定は true/false を返す関数にする
+// TODO: 衝突後になにが起きるかは別関数(各構造体に持つのが良さそう)にする
 // IsCollide はプレイヤーが対象の object と衝突しているか判定する
-func (p *Player) IsCollide(dx, dy int, object Sprite) (int, int) {
+func (p *Player) IsCollide(dx, dy *int, object Sprite) {
+	var cm CollideMap
 	// プレイヤーの座標
 	x := p.Position.X // x座標の位置
 	y := p.Position.Y // y座標の位置
@@ -197,7 +200,7 @@ func (p *Player) IsCollide(dx, dy int, object Sprite) (int, int) {
 	w, h := img.Size() // プレイヤーの幅と高さ
 
 	// 対象のオブジェクトの x,y座標の位置と幅と高さを取得する
-	x1, y1, w1, h1 := object.GetCordinates()
+	x1, y1, w1, h1 := object.GetCoordinates()
 
 	// 対象オブジェクトは相対座標付与して衝突判定を行う
 	x1 += p.ViewPort.X
@@ -207,36 +210,36 @@ func (p *Player) IsCollide(dx, dy int, object Sprite) (int, int) {
 	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
 
 	if overlappedY {
-		if dx < 0 && x+dx <= x1+w1 && x+w+dx >= x1 {
+		if *dx < 0 && x+*dx <= x1+w1 && x+w+*dx >= x1 {
 			// 左方向の移動の衝突判定
 			// 衝突していたらx軸の移動速度を 0 にする
-			dx = 0
-		} else if dx > 0 && x+w+dx >= x1 && x+dx <= x1+w1 {
+			cm.Left = true
+		} else if *dx > 0 && x+w+*dx >= x1 && x+*dx <= x1+w1 {
 			// 右方向の移動の衝突判定
 			// 衝突していたらx軸の移動速度を 0 にする
-			dx = 0
+			cm.Right = true
 		}
 	}
 	if overlappedX {
-		if dy < 0 && y+dy <= y1+w1 && y+h+dy >= y1 {
+		if *dy < 0 && y+*dy <= y1+w1 && y+h+*dy >= y1 {
 			// 上方向の移動の衝突判定
 			// 衝突していたらy軸の移動速度を 0 にする
-			dy = 0
-		} else if dy > 0 && y+h+dy >= y1 && y+dy <= y1+h1 {
+			cm.Top = true
+		} else if *dy > 0 && y+h+*dy >= y1 && y+*dy <= y1+h1 {
 			// 下方向の移動の衝突判定
 			// 衝突していたらy軸の移動速度を 0 にする
-			dy = 0
-
-			// ジャンプ中フラグをオフにする
-			p.jumping = false
-			p.jumpSpeed = 0
+			cm.Bottom = true
 		}
 	}
 
-	return dx, dy
+	if cm.HasCollision() {
+		object.Collision(p, dx, dy, &cm)
+	}
+
+	return
 }
 
-func (p *Player) DrawImage(screen *ebiten.Image) {
+func (p *Player) DrawImage(screen *ebiten.Image, _ Position) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
 	screen.DrawImage(p.currentImage(), op)
