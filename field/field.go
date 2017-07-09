@@ -14,6 +14,7 @@ const (
 
 	blockMark  = "+"
 	playerMark = "P"
+	coinMark   = "C"
 )
 
 type Field struct {
@@ -37,6 +38,11 @@ func NewField(fieldData string) *Field {
 				player.Position.X = indexX * width
 				player.Position.Y = indexY * height
 				field.Player = player
+			case coinMark:
+				coin := sprite.NewCoin()
+				coin.Position.X = indexX * width
+				coin.Position.Y = indexY * width
+				field.Sprites = append(field.Sprites, coin)
 			}
 		}
 	}

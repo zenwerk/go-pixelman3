@@ -79,15 +79,15 @@ var (
 func init() {
 	tmpImage := image.NewRGBA(image.Rect(0, 0, charWidth, charHeight))
 
-	utils.CreateImageFromString(player_anim0, tmpImage)
+	utils.CreateImageFromString(player_anim0, tmpImage, utils.White)
 	playerAnim0, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim0.ReplacePixels(tmpImage.Pix)
 
-	utils.CreateImageFromString(player_anim1, tmpImage)
+	utils.CreateImageFromString(player_anim1, tmpImage, utils.White)
 	playerAnim1, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim1.ReplacePixels(tmpImage.Pix)
 
-	utils.CreateImageFromString(player_anim2, tmpImage)
+	utils.CreateImageFromString(player_anim2, tmpImage, utils.White)
 	playerAnim2, _ = ebiten.NewImage(charWidth, charHeight, ebiten.FilterNearest)
 	playerAnim2.ReplacePixels(tmpImage.Pix)
 }
@@ -212,22 +212,18 @@ func (p *Player) IsCollide(dx, dy *int, object Sprite) {
 	if overlappedY {
 		if *dx < 0 && x+*dx <= x1+w1 && x+w+*dx >= x1 {
 			// 左方向の移動の衝突判定
-			// 衝突していたらx軸の移動速度を 0 にする
 			cm.Left = true
 		} else if *dx > 0 && x+w+*dx >= x1 && x+*dx <= x1+w1 {
 			// 右方向の移動の衝突判定
-			// 衝突していたらx軸の移動速度を 0 にする
 			cm.Right = true
 		}
 	}
 	if overlappedX {
 		if *dy < 0 && y+*dy <= y1+w1 && y+h+*dy >= y1 {
 			// 上方向の移動の衝突判定
-			// 衝突していたらy軸の移動速度を 0 にする
 			cm.Top = true
 		} else if *dy > 0 && y+h+*dy >= y1 && y+*dy <= y1+h1 {
 			// 下方向の移動の衝突判定
-			// 衝突していたらy軸の移動速度を 0 にする
 			cm.Bottom = true
 		}
 	}

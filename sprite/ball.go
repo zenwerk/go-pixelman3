@@ -25,7 +25,7 @@ var (
 
 func init() {
 	tmpImage := image.NewRGBA(image.Rect(0, 0, 7, 4))
-	utils.CreateImageFromString(ball_img, tmpImage)
+	utils.CreateImageFromString(ball_img, tmpImage, utils.Red)
 	ballImg, _ = ebiten.NewImage(7, 4, ebiten.FilterNearest)
 	ballImg.ReplacePixels(tmpImage.Pix)
 }
