@@ -124,6 +124,7 @@ func NewPlayer() *Player {
 	player.ImageNum = len(player.Images)
 	player.jumpSpeed = 0
 	player.fallSpeed = 0.4
+	player.keyPressed = make(map[ebiten.Key]bool)
 	return player
 }
 
@@ -137,15 +138,15 @@ func (p *Player) jump() {
 func (p *Player) Move(objects []Sprite) {
 	// dx, dy はユーザーの移動方向を保存する
 	var dx, dy int
-	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
+	if p.IsKeyPressed(ebiten.KeyLeft) {
 		dx = -1
 		p.count++
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
+	if p.IsKeyPressed(ebiten.KeyRight) {
 		dx = 1
 		p.count++
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyUp) {
+	if p.IsKeyPressedOneTime(ebiten.KeyUp) {
 		p.jump()
 		p.count++
 	}
@@ -178,7 +179,7 @@ func (p *Player) Move(objects []Sprite) {
 }
 
 func (p *Player) Action() {
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+	if p.IsKeyPressedOneTime(ebiten.KeySpace) {
 		pos := Position{
 			X: (p.Position.X - p.ViewPort.X) + 8,
 			Y: (p.Position.Y - p.ViewPort.Y) + 4,

@@ -29,17 +29,19 @@ func (cm *CollideMap) HasCollision() bool {
 }
 
 type BaseSprite struct {
-	Images     []*ebiten.Image // アニメーションさせる画像の配列
-	ImageNum   int             // 総イメージ数
-	CurrentNum int             // 現在何枚目の画像が表示されているか
-	Position   Position        // 現在表示されている位置
-	count      int             // フレーム数のカウンター
+	Images     []*ebiten.Image     // アニメーションさせる画像の配列
+	ImageNum   int                 // 総イメージ数
+	CurrentNum int                 // 現在何枚目の画像が表示されているか
+	Position   Position            // 現在表示されている位置
+	count      int                 // フレーム数のカウンター
+	keyPressed map[ebiten.Key]bool // 現在なんのキーが押されているか
 }
 
 func NewSprite(images []*ebiten.Image) *BaseSprite {
 	return &BaseSprite{
-		Images:   images,
-		ImageNum: len(images),
+		Images:     images,
+		ImageNum:   len(images),
+		keyPressed: make(map[ebiten.Key]bool),
 	}
 }
 
@@ -53,6 +55,34 @@ func (s *BaseSprite) currentImage() *ebiten.Image {
 		s.CurrentNum %= s.ImageNum
 	}
 	return s.Images[s.CurrentNum]
+}
+
+// IsKeyPressed は指定したキーが現在押下されているか判断し返す
+func (s *BaseSprite) IsKeyPressed(key ebiten.Key) bool {
+	pressed := ebiten.IsKeyPressed(key)
+	if pressed {
+		s.keyPressed[key] = true
+	}
+	return pressed
+}
+
+// IsKeyReleased は指定されたキーが現在押下されていないか判断し返す
+func (s *BaseSprite) IsKeyReleased(key ebiten.Key) bool {
+	// キーは押されていると記録されていたが, 実際にはキーは押されていない -> キーがリリースされた
+	if s.keyPressed[key] && !ebiten.IsKeyPressed(key) {
+		s.keyPressed[key] = false
+		return true
+	}
+	return false
+}
+
+// IsKeyPressedOneTime はキーが押下された初回のみ true を返す
+func (s *BaseSprite) IsKeyPressedOneTime(key ebiten.Key) bool {
+	pressed := s.keyPressed[key]
+	if pressed && !s.IsKeyReleased(key) {
+		return false
+	}
+	return s.IsKeyPressed(key)
 }
 
 func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort Position) {
