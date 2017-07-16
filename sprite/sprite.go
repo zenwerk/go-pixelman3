@@ -32,7 +32,7 @@ type BaseSprite struct {
 	Images     []*ebiten.Image     // アニメーションさせる画像の配列
 	ImageNum   int                 // 総イメージ数
 	CurrentNum int                 // 現在何枚目の画像が表示されているか
-	Position   Position            // 現在表示されている位置
+	Position   Position            // 現在表示されている位置(左上)
 	count      int                 // フレーム数のカウンター
 	keyPressed map[ebiten.Key]bool // 現在なんのキーが押されているか
 }

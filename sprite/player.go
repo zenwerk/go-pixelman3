@@ -107,11 +107,11 @@ func isOverlap(x1, x2, x3, x4 int) bool {
 
 type Player struct {
 	BaseSprite
-	jumping     bool     // 現在ジャンプ中か
-	jumpSpeed   float64  // 現在のジャンプ力
-	fallSpeed   float64  // 落下速度
-	ViewPort    Position // スクリーン上の相対座標
-	PlayerBalls Balls
+	jumping   bool     // 現在ジャンプ中か
+	jumpSpeed float64  // 現在のジャンプ力
+	fallSpeed float64  // 落下速度
+	ViewPort  Position // スクリーン上の相対座標
+	Balls     Balls
 }
 
 func NewPlayer() *Player {
@@ -185,7 +185,7 @@ func (p *Player) Action() {
 			Y: (p.Position.Y - p.ViewPort.Y) + 4,
 		}
 		ball := NewBall(pos)
-		p.PlayerBalls = append(p.PlayerBalls, ball)
+		p.Balls = append(p.Balls, ball)
 	}
 }
 

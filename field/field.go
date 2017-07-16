@@ -18,11 +18,11 @@ const (
 )
 
 type Field struct {
-	Player  *sprite.Player
 	Sprites []sprite.Sprite
 }
 
-func NewField(fieldData string) *Field {
+func NewField(fieldData string) (*Field, *sprite.Player) {
+	player := new(sprite.Player)
 	field := new(Field)
 
 	for indexY, line := range strings.Split(fieldData, "\n") {
@@ -34,10 +34,9 @@ func NewField(fieldData string) *Field {
 				block.Position.Y = indexY * height
 				field.Sprites = append(field.Sprites, block)
 			case playerMark:
-				player := sprite.NewPlayer()
+				player = sprite.NewPlayer()
 				player.Position.X = indexX * width
 				player.Position.Y = indexY * height
-				field.Player = player
 			case coinMark:
 				coin := sprite.NewCoin()
 				coin.Position.X = indexX * width
@@ -47,7 +46,7 @@ func NewField(fieldData string) *Field {
 		}
 	}
 
-	return field
+	return field, player
 }
 
 func (f *Field) DrawImage(screen *ebiten.Image, viewport sprite.Position) {

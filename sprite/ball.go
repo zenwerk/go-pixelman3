@@ -3,7 +3,9 @@ package sprite
 import (
 	"image"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/hajimehoshi/ebiten"
+
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
@@ -44,6 +46,21 @@ func NewBall(pos Position) *Ball {
 	return ball
 }
 
+func (b *Ball) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+	switch v := object.(type) {
+	case *Block:
+		b.collideBlock(v, dx, dy, cm)
+	default:
+		log.Warn("unknown type")
+	}
+}
+
+func (b *Ball) collideBlock(p *Block, dx, dy *int, cm *CollideMap) {
+	if cm.Left || cm.Right {
+		log.Info("ぶつかりました")
+	}
+}
+
 func (bs *Balls) Move(viewport Position) {
 	balls := *bs
 
@@ -59,3 +76,4 @@ func (bs *Balls) Move(viewport Position) {
 	}
 	*bs = balls
 }
+
