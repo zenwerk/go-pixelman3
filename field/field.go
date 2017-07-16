@@ -49,7 +49,7 @@ func NewField(fieldData string) (*Field, *sprite.Player) {
 	return field, player
 }
 
-func (f *Field) DrawImage(screen *ebiten.Image, viewport sprite.Position) {
+func (f *Field) DrawImage(screen *ebiten.Image, viewport *sprite.Position) {
 	for _, sprite := range f.Sprites {
 		sprite.DrawImage(screen, viewport)
 	}

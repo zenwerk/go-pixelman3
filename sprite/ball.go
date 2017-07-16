@@ -3,8 +3,8 @@ package sprite
 import (
 	"image"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/hajimehoshi/ebiten"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/zenwerk/go-pixelman3/utils"
 )
@@ -61,7 +61,7 @@ func (b *Ball) collideBlock(p *Block, dx, dy *int, cm *CollideMap) {
 	}
 }
 
-func (bs *Balls) Move(viewport Position) {
+func (bs *Balls) Move(viewport *Position) {
 	balls := *bs
 
 	for i := 0; i < len(balls); i++ {
@@ -76,4 +76,3 @@ func (bs *Balls) Move(viewport Position) {
 	}
 	*bs = balls
 }
-

@@ -107,10 +107,9 @@ func isOverlap(x1, x2, x3, x4 int) bool {
 
 type Player struct {
 	BaseSprite
-	jumping   bool     // 現在ジャンプ中か
-	jumpSpeed float64  // 現在のジャンプ力
-	fallSpeed float64  // 落下速度
-	ViewPort  Position // スクリーン上の相対座標
+	jumping   bool    // 現在ジャンプ中か
+	jumpSpeed float64 // 現在のジャンプ力
+	fallSpeed float64 // 落下速度
 	Balls     Balls
 }
 
@@ -135,7 +134,7 @@ func (p *Player) jump() {
 	}
 }
 
-func (p *Player) Move(objects []Sprite) {
+func (p *Player) Move(objects []Sprite, viewPort *Position) {
 	// dx, dy はユーザーの移動方向を保存する
 	var dx, dy int
 	if p.IsKeyPressed(ebiten.KeyLeft) {
@@ -158,31 +157,31 @@ func (p *Player) Move(objects []Sprite) {
 	dy = round(p.jumpSpeed)
 
 	for _, object := range objects {
-		p.IsCollide(&dx, &dy, object)
+		p.IsCollide(&dx, &dy, object, viewPort)
 	}
 
 	// 画面上の左右の移動限界に達しているか確認する
 	if p.Position.X+dx < xLeftLimit || p.Position.X+dx > xRightLimit {
 		// 移動限界に達しているなら相対座標を更新する
 		// 他のオブジェクトがプレイヤーが移動する方向の逆方向に進んで欲しいので反転して(-=)代入する
-		p.ViewPort.X -= dx
+		viewPort.X -= dx
 	} else {
 		// 移動限界に達していないなら自身の絶対座標を更新する
 		p.Position.X += dx
 	}
 
 	if p.Position.Y+dy < yUpperLimit || p.Position.Y+dy > yLowerLimit {
-		p.ViewPort.Y -= dy
+		viewPort.Y -= dy
 	} else {
 		p.Position.Y += dy
 	}
 }
 
-func (p *Player) Action() {
+func (p *Player) Action(viewPort *Position) {
 	if p.IsKeyPressedOneTime(ebiten.KeySpace) {
 		pos := Position{
-			X: (p.Position.X - p.ViewPort.X) + 8,
-			Y: (p.Position.Y - p.ViewPort.Y) + 4,
+			X: (p.Position.X - viewPort.X) + 8,
+			Y: (p.Position.Y - viewPort.Y) + 4,
 		}
 		ball := NewBall(pos)
 		p.Balls = append(p.Balls, ball)
@@ -192,7 +191,7 @@ func (p *Player) Action() {
 // TODO: 衝突判定は true/false を返す関数にする
 // TODO: 衝突後になにが起きるかは別関数(各構造体に持つのが良さそう)にする
 // IsCollide はプレイヤーが対象の object と衝突しているか判定する
-func (p *Player) IsCollide(dx, dy *int, object Sprite) {
+func (p *Player) IsCollide(dx, dy *int, object Sprite, viewPort *Position) {
 	var cm CollideMap
 	// プレイヤーの座標
 	x := p.Position.X // x座標の位置
@@ -204,8 +203,8 @@ func (p *Player) IsCollide(dx, dy *int, object Sprite) {
 	x1, y1, w1, h1 := object.GetCoordinates()
 
 	// 対象オブジェクトは相対座標付与して衝突判定を行う
-	x1 += p.ViewPort.X
-	y1 += p.ViewPort.Y
+	x1 += viewPort.X
+	y1 += viewPort.Y
 
 	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
 	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
@@ -236,7 +235,7 @@ func (p *Player) IsCollide(dx, dy *int, object Sprite) {
 	return
 }
 
-func (p *Player) DrawImage(screen *ebiten.Image, _ Position) {
+func (p *Player) DrawImage(screen *ebiten.Image, _ *Position) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
 	screen.DrawImage(p.currentImage(), op)

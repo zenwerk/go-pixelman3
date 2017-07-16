@@ -3,8 +3,8 @@ package sprite
 import (
 	"image"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/hajimehoshi/ebiten"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/zenwerk/go-pixelman3/utils"
 )
@@ -56,7 +56,7 @@ func NewCoin() *Coin {
 	return coin
 }
 
-func (c *Coin) DrawImage(screen *ebiten.Image, viewPort Position) {
+func (c *Coin) DrawImage(screen *ebiten.Image, viewPort *Position) {
 	if c.Alive {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(c.Position.X+viewPort.X), float64(c.Position.Y+viewPort.Y))

@@ -7,7 +7,7 @@ import (
 
 type Sprite interface {
 	GetCoordinates() (int, int, int, int)
-	DrawImage(*ebiten.Image, Position)
+	DrawImage(*ebiten.Image, *Position)
 	Collision(Sprite, *int, *int, *CollideMap)
 }
 
@@ -85,7 +85,7 @@ func (s *BaseSprite) IsKeyPressedOneTime(key ebiten.Key) bool {
 	return s.IsKeyPressed(key)
 }
 
-func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort Position) {
+func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort *Position) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(s.Position.X+viewPort.X), float64(s.Position.Y+viewPort.Y))
 	screen.DrawImage(s.currentImage(), op)
