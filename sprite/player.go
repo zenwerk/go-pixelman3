@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/zenwerk/go-pixelman3/utils"
 )
@@ -157,7 +158,7 @@ func (p *Player) Move(objects []Sprite, viewPort *Position) {
 	dy = round(p.jumpSpeed)
 
 	for _, object := range objects {
-		p.IsCollide(&dx, &dy, object, viewPort)
+		p.IsCollide(object, &dx, &dy, viewPort)
 	}
 
 	// 画面上の左右の移動限界に達しているか確認する
@@ -188,55 +189,51 @@ func (p *Player) Action(viewPort *Position) {
 	}
 }
 
-// TODO: 衝突判定は true/false を返す関数にする
-// TODO: 衝突後になにが起きるかは別関数(各構造体に持つのが良さそう)にする
-// IsCollide はプレイヤーが対象の object と衝突しているか判定する
-func (p *Player) IsCollide(dx, dy *int, object Sprite, viewPort *Position) {
-	var cm CollideMap
-	// プレイヤーの座標
-	x := p.Position.X // x座標の位置
-	y := p.Position.Y // y座標の位置
-	img := p.currentImage()
-	w, h := img.Size() // プレイヤーの幅と高さ
+func (p *Player) DrawImage(screen *ebiten.Image, _ *Position) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
+	screen.DrawImage(p.currentImage(), op)
+}
 
-	// 対象のオブジェクトの x,y座標の位置と幅と高さを取得する
-	x1, y1, w1, h1 := object.GetCoordinates()
-
-	// 対象オブジェクトは相対座標付与して衝突判定を行う
-	x1 += viewPort.X
-	y1 += viewPort.Y
-
-	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
-	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
-
-	if overlappedY {
-		if *dx < 0 && x+*dx <= x1+w1 && x+w+*dx >= x1 {
-			// 左方向の移動の衝突判定
-			cm.Left = true
-		} else if *dx > 0 && x+w+*dx >= x1 && x+*dx <= x1+w1 {
-			// 右方向の移動の衝突判定
-			cm.Right = true
-		}
-	}
-	if overlappedX {
-		if *dy < 0 && y+*dy <= y1+w1 && y+h+*dy >= y1 {
-			// 上方向の移動の衝突判定
-			cm.Top = true
-		} else if *dy > 0 && y+h+*dy >= y1 && y+*dy <= y1+h1 {
-			// 下方向の移動の衝突判定
-			cm.Bottom = true
-		}
-	}
+// IsCollide は自身が対象の object と衝突しているか判定する
+func (p *Player) IsCollide(object Sprite, dx, dy *int, viewPort *Position) {
+	cm := p.detectCollisions(object, dx, dy, viewPort)
 
 	if cm.HasCollision() {
-		object.Collision(p, dx, dy, &cm)
+		p.Collision(object, dx, dy, cm)
 	}
 
 	return
 }
 
-func (p *Player) DrawImage(screen *ebiten.Image, _ *Position) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
-	screen.DrawImage(p.currentImage(), op)
+func (p *Player) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+	switch v := object.(type) {
+	case *Block:
+		log.Warn("Block です！！")
+		p.collideBlock(v, dx, dy, cm)
+	case *Coin:
+		log.Warn("Coin です！！")
+		p.collideCoin(v, dx, dy, cm)
+	default:
+		log.Warn("unknown type")
+	}
+}
+
+func (p *Player) collideBlock(_ *Block, dx, dy *int, cm *CollideMap) {
+	if cm.Left || cm.Right {
+		*dx = 0
+	}
+	if cm.Top {
+		*dy = 0
+	}
+	if cm.Bottom {
+		*dy = 0
+		// ジャンプ中フラグをオフにする
+		p.jumping = false
+		p.jumpSpeed = 0
+	}
+}
+
+func (p *Player) collideCoin(c *Coin, _, _ *int, cm *CollideMap) {
+	c.Alive = false
 }

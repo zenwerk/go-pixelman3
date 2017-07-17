@@ -96,6 +96,51 @@ func (s *BaseSprite) GetCoordinates() (int, int, int, int) {
 	return s.Position.X, s.Position.Y, w, h
 }
 
+func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, viewPort *Position) *CollideMap {
+	var cm CollideMap
+	// 自身の座標
+	x := s.Position.X // x座標の位置
+	y := s.Position.Y // y座標の位置
+	img := s.currentImage()
+	w, h := img.Size() // 自身の幅と高さ
+
+	// 対象のオブジェクトの x,y座標の位置と幅と高さを取得する
+	x1, y1, w1, h1 := object.GetCoordinates()
+
+	// 対象オブジェクトは相対座標付与して衝突判定を行う
+	x1 += viewPort.X
+	y1 += viewPort.Y
+
+	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
+	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
+
+	if overlappedY {
+		if *dx < 0 && x+*dx <= x1+w1 && x+w+*dx >= x1 {
+			// 左方向の移動の衝突判定
+			cm.Left = true
+		} else if *dx > 0 && x+w+*dx >= x1 && x+*dx <= x1+w1 {
+			// 右方向の移動の衝突判定
+			cm.Right = true
+		}
+	}
+	if overlappedX {
+		if *dy < 0 && y+*dy <= y1+w1 && y+h+*dy >= y1 {
+			// 上方向の移動の衝突判定
+			cm.Top = true
+		} else if *dy > 0 && y+h+*dy >= y1 && y+*dy <= y1+h1 {
+			// 下方向の移動の衝突判定
+			cm.Bottom = true
+		}
+	}
+
+	return &cm
+}
+
+// IsCollide は自身が対象の object と衝突しているか判定する
+func (s *BaseSprite) IsCollide(object Sprite, dx, dy *int, viewPort *Position) {
+	log.Info("overwrite this method.")
+}
+
 func (s *BaseSprite) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
 	log.Info("overwrite this method.")
 }

@@ -4,7 +4,6 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/zenwerk/go-pixelman3/utils"
 )
@@ -62,17 +61,4 @@ func (c *Coin) DrawImage(screen *ebiten.Image, viewPort *Position) {
 		op.GeoM.Translate(float64(c.Position.X+viewPort.X), float64(c.Position.Y+viewPort.Y))
 		screen.DrawImage(c.currentImage(), op)
 	}
-}
-
-func (c *Coin) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
-	switch v := object.(type) {
-	case *Player:
-		c.collidePlayer(v)
-	default:
-		log.Warn("unknown type")
-	}
-}
-
-func (c *Coin) collidePlayer(p *Player) {
-	c.Alive = false
 }
