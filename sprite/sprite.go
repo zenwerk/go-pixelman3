@@ -96,6 +96,14 @@ func (s *BaseSprite) GetCoordinates() (int, int, int, int) {
 	return s.Position.X, s.Position.Y, w, h
 }
 
+// isOverlap は x1-x2 の範囲の整数が x3-x4 の範囲と重なるかを判定する
+func isOverlap(x1, x2, x3, x4 int) bool {
+	if x1 <= x4 && x2 >= x3 {
+		return true
+	}
+	return false
+}
+
 func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, viewPort *Position) *CollideMap {
 	var cm CollideMap
 	// 自身の座標

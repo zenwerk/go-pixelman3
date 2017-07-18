@@ -98,14 +98,6 @@ func round(f float64) int {
 	return int(math.Floor(f + .5))
 }
 
-// isOverlap は x1-x2 の範囲の整数が x3-x4 の範囲と重なるかを判定する
-func isOverlap(x1, x2, x3, x4 int) bool {
-	if x1 <= x4 && x2 >= x3 {
-		return true
-	}
-	return false
-}
-
 type Player struct {
 	BaseSprite
 	jumping   bool    // 現在ジャンプ中か
@@ -209,10 +201,8 @@ func (p *Player) IsCollide(object Sprite, dx, dy *int, viewPort *Position) {
 func (p *Player) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
 	switch v := object.(type) {
 	case *Block:
-		log.Warn("Block です！！")
 		p.collideBlock(v, dx, dy, cm)
 	case *Coin:
-		log.Warn("Coin です！！")
 		p.collideCoin(v, dx, dy, cm)
 	default:
 		log.Warn("unknown type")
