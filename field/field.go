@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
+	"github.com/zenwerk/go-pixelman3/camera"
 	"github.com/zenwerk/go-pixelman3/sprite"
 )
 
@@ -49,8 +50,8 @@ func NewField(fieldData string) (*Field, *sprite.Player) {
 	return field, player
 }
 
-func (f *Field) DrawImage(screen *ebiten.Image, viewport *sprite.Position) {
+func (f *Field) DrawImage(screen *ebiten.Image, camera *camera.Camera) {
 	for _, sprite := range f.Sprites {
-		sprite.DrawImage(screen, viewport)
+		sprite.DrawImage(screen, camera)
 	}
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
+	"github.com/zenwerk/go-pixelman3/camera"
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
@@ -55,10 +56,10 @@ func NewCoin() *Coin {
 	return coin
 }
 
-func (c *Coin) DrawImage(screen *ebiten.Image, viewPort *Position) {
+func (c *Coin) DrawImage(screen *ebiten.Image, camera *camera.Camera) {
 	if c.Alive {
 		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(c.Position.X+viewPort.X), float64(c.Position.Y+viewPort.Y))
+		op.GeoM.Translate(float64(c.Position.X+camera.X), float64(c.Position.Y+camera.Y))
 		screen.DrawImage(c.currentImage(), op)
 	}
 }

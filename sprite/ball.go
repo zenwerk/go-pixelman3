@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/zenwerk/go-pixelman3/camera"
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
@@ -61,7 +62,7 @@ func (b *Ball) collideBlock(p *Block, dx, dy *int, cm *CollideMap) {
 	}
 }
 
-func (bs *Balls) Move(viewport *Position) {
+func (bs *Balls) Move(camera *camera.Camera) {
 	balls := *bs
 
 	for i := 0; i < len(balls); i++ {
@@ -69,7 +70,7 @@ func (bs *Balls) Move(viewport *Position) {
 		b.Position.X += ballSpeed
 
 		// 表示領域外に出たら配列から削除する
-		if b.Position.X > (screenWidth-viewport.X) || b.Position.Y > (screenHeight-viewport.Y) || b.Position.X < 0 || b.Position.Y < 0 {
+		if b.Position.X > (screenWidth-camera.X) || b.Position.Y > (screenHeight-camera.Y) || b.Position.X < 0 || b.Position.Y < 0 {
 			balls = append(balls[:i], balls[i+1:]...)
 			i--
 		}

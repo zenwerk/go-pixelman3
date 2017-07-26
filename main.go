@@ -9,10 +9,13 @@ import (
 )
 
 func main() {
-	game := game.Game{}
+	game := game.Game{
+		ScreenWidth:  320,
+		ScreenHeight: 240,
+	}
 	game.Init()
 
-	if err := ebiten.Run(game.MainLoop, 320, 240, 2, "go-pixelman3"); err != nil {
+	if err := ebiten.Run(game.MainLoop, game.ScreenWidth, game.ScreenHeight, 2, "go-pixelman3"); err != nil {
 		log.Fatal(err)
 	}
 }

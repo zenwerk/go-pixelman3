@@ -3,11 +3,13 @@ package sprite
 import (
 	"github.com/hajimehoshi/ebiten"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/zenwerk/go-pixelman3/camera"
 )
 
 type Sprite interface {
 	GetCoordinates() (int, int, int, int)
-	DrawImage(*ebiten.Image, *Position)
+	DrawImage(*ebiten.Image, *camera.Camera)
 	Collision(Sprite, *int, *int, *CollideMap)
 }
 
@@ -85,9 +87,9 @@ func (s *BaseSprite) IsKeyPressedOneTime(key ebiten.Key) bool {
 	return s.IsKeyPressed(key)
 }
 
-func (s *BaseSprite) DrawImage(screen *ebiten.Image, viewPort *Position) {
+func (s *BaseSprite) DrawImage(screen *ebiten.Image, camera *camera.Camera) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(s.Position.X+viewPort.X), float64(s.Position.Y+viewPort.Y))
+	op.GeoM.Translate(float64(s.Position.X+camera.X), float64(s.Position.Y+camera.Y))
 	screen.DrawImage(s.currentImage(), op)
 }
 
@@ -104,7 +106,7 @@ func isOverlap(x1, x2, x3, x4 int) bool {
 	return false
 }
 
-func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, viewPort *Position) *CollideMap {
+func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, camera *camera.Camera) *CollideMap {
 	var cm CollideMap
 	// 自身の座標
 	x := s.Position.X // x座標の位置
@@ -116,8 +118,8 @@ func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, viewPort *Posi
 	x1, y1, w1, h1 := object.GetCoordinates()
 
 	// 対象オブジェクトは相対座標付与して衝突判定を行う
-	x1 += viewPort.X
-	y1 += viewPort.Y
+	x1 += camera.X
+	y1 += camera.Y
 
 	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
 	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
@@ -145,7 +147,7 @@ func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, viewPort *Posi
 }
 
 // IsCollide は自身が対象の object と衝突しているか判定する
-func (s *BaseSprite) IsCollide(object Sprite, dx, dy *int, viewPort *Position) {
+func (s *BaseSprite) IsCollide(object Sprite, dx, dy *int, camera *camera.Camera) {
 	log.Info("overwrite this method.")
 }
 
