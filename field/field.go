@@ -20,13 +20,19 @@ const (
 
 type Field struct {
 	Sprites []sprite.Sprite
+	Width   int
+	Height  int
 }
 
 func NewField(fieldData string) (*Field, *sprite.Player) {
 	player := new(sprite.Player)
 	field := new(Field)
 
+	countX:= 0
+	countY := 0
+
 	for indexY, line := range strings.Split(fieldData, "\n") {
+		counter := 0
 		for indexX, str := range line {
 			switch string(str) {
 			case blockMark:
@@ -44,9 +50,16 @@ func NewField(fieldData string) (*Field, *sprite.Player) {
 				coin.Position.Y = indexY * width
 				field.Sprites = append(field.Sprites, coin)
 			}
+			counter++
 		}
+		if countX < counter {
+			countX = counter
+		}
+		countY++
 	}
 
+	field.Width = countX * width
+	field.Height = countY * height
 	return field, player
 }
 
