@@ -10,7 +10,7 @@ import (
 type Sprite interface {
 	GetCoordinates() (int, int, int, int)
 	DrawImage(*ebiten.Image, *camera.Camera)
-	Collision(Sprite, *int, *int, *CollideMap)
+	Collision(Sprite, int, int)
 }
 
 type Position struct {
@@ -98,59 +98,24 @@ func (s *BaseSprite) GetCoordinates() (int, int, int, int) {
 	return s.Position.X, s.Position.Y, w, h
 }
 
-// isOverlap は x1-x2 の範囲の整数が x3-x4 の範囲と重なるかを判定する
-func isOverlap(x1, x2, x3, x4 int) bool {
-	if x1 <= x4 && x2 >= x3 {
-		return true
-	}
-	return false
+// Intersect は2つの Sprite が交差しているか計算し返す
+func (s *BaseSprite) Intersect(object Sprite) bool {
+	ax, ay, aw, ah := s.GetCoordinates()
+	bx, by, bw, bh := object.GetCoordinates()
+
+	// aの左上 < bの右下 かつ aの右下 > bの左上
+	return (ax < bx+bw && ay < by+bh) && (ax+aw > bx && ay+ah > by)
+}
+func (bs *BaseSprite) Width() int {
+	w, _ := bs.currentImage().Size()
+	return w
 }
 
-func (s *BaseSprite) detectCollisions(object Sprite, dx, dy *int, camera *camera.Camera) *CollideMap {
-	var cm CollideMap
-	// 自身の座標
-	x := s.Position.X // x座標の位置
-	y := s.Position.Y // y座標の位置
-	img := s.currentImage()
-	w, h := img.Size() // 自身の幅と高さ
-
-	// 対象のオブジェクトの x,y座標の位置と幅と高さを取得する
-	x1, y1, w1, h1 := object.GetCoordinates()
-
-	// 対象オブジェクトは相対座標付与して衝突判定を行う
-	x1 += camera.X
-	y1 += camera.Y
-
-	overlappedX := isOverlap(x, x+w, x1, x1+w1) // x軸で重なっているか
-	overlappedY := isOverlap(y, y+h, y1, y1+h1) // y軸で重なっているか
-
-	if overlappedY {
-		if *dx < 0 && x+*dx <= x1+w1 && x+w+*dx >= x1 {
-			// 左方向の移動の衝突判定
-			cm.Left = true
-		} else if *dx > 0 && x+w+*dx >= x1 && x+*dx <= x1+w1 {
-			// 右方向の移動の衝突判定
-			cm.Right = true
-		}
-	}
-	if overlappedX {
-		if *dy < 0 && y+*dy <= y1+w1 && y+h+*dy >= y1 {
-			// 上方向の移動の衝突判定
-			cm.Top = true
-		} else if *dy > 0 && y+h+*dy >= y1 && y+*dy <= y1+h1 {
-			// 下方向の移動の衝突判定
-			cm.Bottom = true
-		}
-	}
-
-	return &cm
+func (bs *BaseSprite) Height() int {
+	_, h := bs.currentImage().Size()
+	return h
 }
 
-// IsCollide は自身が対象の object と衝突しているか判定する
-func (s *BaseSprite) IsCollide(object Sprite, dx, dy *int, camera *camera.Camera) {
-	log.Info("overwrite this method.")
-}
-
-func (s *BaseSprite) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+func (s *BaseSprite) Collision(object Sprite, dx, dy int) {
 	log.Info("overwrite this method.")
 }

@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	width  = 17
-	height = 17
+	width  = 16
+	height = 16
 
 	blockMark  = "+"
 	playerMark = "P"

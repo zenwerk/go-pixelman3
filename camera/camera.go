@@ -13,17 +13,19 @@ type Camera struct {
 	//XRightLimit int // 右方向移動の画面上の限界
 	//YUpperLimit int // 上方向移動の画面上の限界
 	//YLowerLimit int // 下方向移動の画面上の限界
+}
 
-	XCenter int // x軸の真ん中
-	YCenter int // y軸の真ん中
+func (c *Camera) SimpleMove(x, y int) {
+	c.X = (c.Width / 2) - x
+	c.Y = (c.Height / 2) - y
 }
 
 func (c *Camera) Move(x, y int) {
-	maxXOffset := -(c.MaxHeight - c.Width)
-	maxYOffset := -(c.MaxWidth - c.Height)
+	maxXOffset := -(c.MaxWidth - c.Width)
+	maxYOffset := -(c.MaxHeight - c.Height)
 
-	restX := c.XCenter - x
-	restY := c.YCenter - y
+	restX := (c.Width / 2) - x
+	restY := (c.Height / 2) - y
 
 	if restX > 0 {
 		c.X = 0

@@ -47,19 +47,17 @@ func NewBall(pos Position) *Ball {
 	return ball
 }
 
-func (b *Ball) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+func (b *Ball) Collision(object Sprite, dx, dy int) {
 	switch v := object.(type) {
 	case *Block:
-		b.collideBlock(v, dx, dy, cm)
+		b.collideBlock(v, dx, dy)
 	default:
 		log.Warn("unknown type")
 	}
 }
 
-func (b *Ball) collideBlock(p *Block, dx, dy *int, cm *CollideMap) {
-	if cm.Left || cm.Right {
-		log.Info("ぶつかりました")
-	}
+func (b *Ball) collideBlock(p *Block, dx, dy int) {
+	log.Info("ぶつかりました")
 }
 
 func (bs *Balls) Move(camera *camera.Camera) {

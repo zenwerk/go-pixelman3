@@ -7,23 +7,11 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	log "github.com/sirupsen/logrus"
 
-	"fmt"
-
 	"github.com/zenwerk/go-pixelman3/camera"
 	"github.com/zenwerk/go-pixelman3/utils"
 )
 
 const (
-	xLeftLimit  = 16 * 3         // 左方向移動の画面上の限界
-	xRightLimit = 320 - (16 * 3) // 右方向移動の画面上の限界
-	yUpperLimit = 16 * 2         // 上方向移動の画面上の限界
-	yLowerLimit = 240 - (16 * 2) // 下方向移動の画面上の限界
-
-	//xLeftLimit  = 320 / 2 // 左方向移動の画面上の限界
-	//xRightLimit = 320 / 2 // 右方向移動の画面上の限界
-	//yUpperLimit = 240 / 2 // 上方向移動の画面上の限界
-	//yLowerLimit = 240 / 2 // 下方向移動の画面上の限界
-
 	charWidth  = 16
 	charHeight = 16
 
@@ -135,7 +123,7 @@ func (p *Player) jump() {
 	}
 }
 
-func (p *Player) Move(objects []Sprite, camera *camera.Camera) {
+func (p *Player) Move(objects []Sprite) {
 	// dx, dy はユーザーの移動方向を保存する
 	var dx, dy int
 	if p.IsKeyPressed(ebiten.KeyLeft) {
@@ -157,82 +145,87 @@ func (p *Player) Move(objects []Sprite, camera *camera.Camera) {
 	}
 	dy = round(p.jumpSpeed)
 
-	for _, object := range objects {
-		p.IsCollide(object, &dx, &dy, camera)
+	if dx != 0 {
+		p.moveX(dx, objects)
 	}
-
-	// 画面上の左右の移動限界に達しているか確認する
-	if p.Position.X+dx < xLeftLimit || p.Position.X+dx > xRightLimit {
-		// 移動限界に達しているなら相対座標を更新する
-		// 他のオブジェクトがプレイヤーが移動する方向の逆方向に進んで欲しいので反転して(-=)代入する
-		camera.X -= dx
-	} else {
-		// 移動限界に達していないなら自身の絶対座標を更新する
-		p.Position.X += dx
+	if dy != 0 {
+		p.moveY(dy, objects)
 	}
-
-	if p.Position.Y+dy < yUpperLimit || p.Position.Y+dy > yLowerLimit {
-		camera.Y -= dy
-	} else {
-		p.Position.Y += dy
-	}
-	fmt.Printf("(%d, %d)\n", camera.X, camera.Y)
 }
 
-func (p *Player) Action(camera *camera.Camera) {
+func (p *Player) moveX(dx int, sprites []Sprite) {
+	p.Position.X += dx
+	// 衝突判定
+	for _, s := range sprites {
+		if p.Intersect(s) {
+			p.Collision(s, dx, 0)
+		}
+	}
+}
+
+func (p *Player) moveY(dy int, sprites []Sprite) {
+	p.Position.Y += dy
+	// 衝突判定
+	for _, s := range sprites {
+		if p.Intersect(s) {
+			p.Collision(s, 0, dy)
+		}
+	}
+}
+
+func (p *Player) Action() {
 	if p.IsKeyPressedOneTime(ebiten.KeySpace) {
 		pos := Position{
-			X: (p.Position.X - camera.X) + 8,
-			Y: (p.Position.Y - camera.Y) + 4,
+			X: (p.Position.X) + 8,
+			Y: (p.Position.Y) + 4,
 		}
 		ball := NewBall(pos)
 		p.Balls = append(p.Balls, ball)
 	}
 }
 
-func (p *Player) DrawImage(screen *ebiten.Image, _ *camera.Camera) {
+func (p *Player) DrawImage(screen *ebiten.Image, camera *camera.Camera) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(p.Position.X), float64(p.Position.Y))
+	op.GeoM.Translate(float64(p.Position.X+camera.X), float64(p.Position.Y+camera.Y))
 	screen.DrawImage(p.currentImage(), op)
 }
 
-// IsCollide は自身が対象の object と衝突しているか判定する
-func (p *Player) IsCollide(object Sprite, dx, dy *int, camera *camera.Camera) {
-	cm := p.detectCollisions(object, dx, dy, camera)
-
-	if cm.HasCollision() {
-		p.Collision(object, dx, dy, cm)
-	}
-
-	return
-}
-
-func (p *Player) Collision(object Sprite, dx, dy *int, cm *CollideMap) {
+func (p *Player) Collision(object Sprite, dx, dy int) {
 	switch v := object.(type) {
 	case *Block:
-		p.collideBlock(v, dx, dy, cm)
+		p.collideBlock(v, dx, dy)
 	case *Coin:
-		p.collideCoin(v, dx, dy, cm)
+		p.collideCoin(v)
 	default:
 		log.Warn("unknown type")
 	}
 }
 
-func (p *Player) collideBlock(_ *Block, dx, dy *int, cm *CollideMap) {
-	if cm.Left || cm.Right {
-		*dx = 0
+func (p *Player) collideBlock(b *Block, dx, dy int) {
+	// 右に移動して衝突
+	if dx > 0 {
+		// プレイヤーの右端の座標がブロックの左端座標になるようにする
+		p.Position.X = b.Position.X - p.Width()
 	}
-	if cm.Top {
-		*dy = 0
+	// 左に移動して衝突
+	if dx < 0 {
+		// プレイヤーの左端の座標がブロックの右端座標になるようにする
+		p.Position.X = b.Position.X + p.Width()
 	}
-	if cm.Bottom {
-		*dy = 0
-		// ジャンプ中フラグをオフにする
+	// 下に移動して衝突
+	if dy > 0 {
+		// プレイヤーの下端の座標がブロックの上端座標になるようにする
+		p.Position.Y = b.Position.Y - p.Height()
 		p.jumping = false
 		p.jumpSpeed = 0
 	}
+	// 上に移動して衝突
+	if dy < 0 {
+		// プレイヤーの上端の座標がブロックの下端座標になるようにする
+		p.Position.Y = b.Position.Y + p.Height()
+	}
 }
 
-func (p *Player) collideCoin(c *Coin, _, _ *int, cm *CollideMap) {
+func (p *Player) collideCoin(c *Coin) {
 	c.Alive = false
 }
