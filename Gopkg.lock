@@ -10,7 +10,7 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
   branch = "master"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
-  revision = "55847fe4ded3fbee15191a625f3305a1fad48b67"
+  revision = "222b83c41c19cc975bfbf6f2611f3a97bde91a56"
 
 [[projects]]
   branch = "master"
@@ -27,23 +27,23 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
 [[projects]]
   branch = "master"
   name = "github.com/hajimehoshi/ebiten"
-  packages = [".","internal","internal/affine","internal/endian","internal/graphics","internal/jni","internal/loop","internal/opengl","internal/restorable","internal/sync","internal/ui"]
-  revision = "8912563555531eec42b9df642120cbaf8cd68f85"
+  packages = [".","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/loop","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
+  revision = "807d03eb3b3e447af6e637275f9ea0826325a79b"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "202f25545ea4cf9b191ff7f846df5d87c9382c2b"
-  version = "v1.0.0"
+  revision = "a3f95b5c423586578a4e099b11a46c2479628cac"
+  version = "1.0.2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/mobile"
   packages = ["gl"]
-  revision = "e1125eeafdfd3d7bb12356c66761000bf749bb64"
+  revision = "683b305bdbdf5901d6d9b094e4948b51a37403a2"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "739734461d1c916b6c72a63d7efda2b27edb369f"
+  revision = "0f826bdd13b500be0f1d4004938ad978fcc6031e"
