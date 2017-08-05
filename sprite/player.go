@@ -96,10 +96,13 @@ func round(f float64) int {
 
 type Player struct {
 	BaseSprite
-	jumping   bool    // 現在ジャンプ中か
-	jumpSpeed float64 // 現在のジャンプ力
-	fallSpeed float64 // 落下速度
-	Balls     Balls
+	jumping    bool    // 現在ジャンプ中か
+	jumpSpeed  float64 // 現在のジャンプ力
+	fallSpeed  float64 // 落下速度
+	Balls      Balls
+	Speed      float64 // 現在のスピード
+	AccelSpeed float64 // 加速度
+	MaxSpeed   float64 // 最大速度
 }
 
 func NewPlayer() *Player {
@@ -113,6 +116,8 @@ func NewPlayer() *Player {
 	player.jumpSpeed = 0
 	player.fallSpeed = 0.4
 	player.keyPressed = make(map[ebiten.Key]bool)
+	player.AccelSpeed = 0.25
+	player.MaxSpeed = 3.0
 	return player
 }
 
@@ -127,17 +132,27 @@ func (p *Player) Move(objects []Sprite) {
 	// dx, dy はユーザーの移動方向を保存する
 	var dx, dy int
 	if p.IsKeyPressed(ebiten.KeyLeft) {
-		dx = -1
+		if p.Speed > -p.MaxSpeed {
+			p.Speed -= p.AccelSpeed
+		}
 		p.count++
-	}
-	if p.IsKeyPressed(ebiten.KeyRight) {
-		dx = 1
+	} else if p.IsKeyPressed(ebiten.KeyRight) {
+		if p.Speed < p.MaxSpeed {
+			p.Speed += p.AccelSpeed
+		}
 		p.count++
+	} else {
+		if p.Speed > 0 {
+			p.Speed -= p.AccelSpeed
+		} else if p.Speed < 0 {
+			p.Speed += p.AccelSpeed
+		}
 	}
 	if p.IsKeyPressedOneTime(ebiten.KeyUp) {
 		p.jump()
 		p.count++
 	}
+	dx = round(p.Speed)
 
 	// 落下速度の計算
 	if p.jumpSpeed < 5 {
