@@ -4,43 +4,51 @@ import (
 	"github.com/hajimehoshi/ebiten"
 
 	"github.com/zenwerk/go-pixelman3/camera"
-	"github.com/zenwerk/go-pixelman3/field"
-	"github.com/zenwerk/go-pixelman3/sprite"
+)
+
+type StateKey string
+
+const (
+	title  StateKey = "title"
+	stage1 StateKey = "stage1"
 )
 
 type Game struct {
 	ScreenWidth  int
 	ScreenHeight int
-	Field        *field.Field
 	Camera       *camera.Camera
-	Player       *sprite.Player
+	CurrentState StateKey
+	States       map[StateKey]State
 }
 
-func (g *Game) Init() {
-	g.Field, g.Player = field.NewField(field.Field_data_1)
-	g.Camera = &camera.Camera{
-		Width:     g.ScreenWidth,
-		Height:    g.ScreenHeight,
-		MaxWidth:  g.Field.Width,
-		MaxHeight: g.Field.Height,
+func NewGame(width, heigh int) *Game {
+	return &Game{
+		ScreenWidth:  width,
+		ScreenHeight: heigh,
 	}
 }
 
+func (g *Game) Init() {
+	g.Camera = &camera.Camera{
+		Width:  g.ScreenWidth,
+		Height: g.ScreenHeight,
+	}
+
+	g.States = map[StateKey]State{
+		title:  NewTitle(),
+		stage1: NewStage1(),
+	}
+	g.CurrentState = title
+}
+
 func (g *Game) MainLoop(screen *ebiten.Image) error {
-	g.Camera.Move(g.Player.Position.X, g.Player.Position.Y)
-	g.Player.Move(g.Field.Sprites)
-	g.Player.Action()
-	g.Player.Balls.Move(g.Camera)
+	g.States[g.CurrentState].Update(g)
 
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
 
-	g.Player.DrawImage(screen, g.Camera)
-	for _, ball := range g.Player.Balls {
-		ball.DrawImage(screen, g.Camera)
-	}
-	g.Field.DrawImage(screen, g.Camera)
+	g.States[g.CurrentState].Draw(screen, g.Camera)
 
 	return nil
 }

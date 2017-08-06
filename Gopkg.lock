@@ -1,4 +1,4 @@
-memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
+memo = "c10517391a722f4ffe7771a3b7ae7f4acd5e2755774d423e72887be5297fe262"
 
 [[projects]]
   branch = "master"
@@ -11,6 +11,12 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
   revision = "222b83c41c19cc975bfbf6f2611f3a97bde91a56"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/golang/freetype"
+  packages = ["raster","truetype"]
+  revision = "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
 
 [[projects]]
   branch = "master"
@@ -27,7 +33,7 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
 [[projects]]
   branch = "master"
   name = "github.com/hajimehoshi/ebiten"
-  packages = [".","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/math","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
+  packages = [".","ebitenutil","ebitenutil/internal/assets","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/math","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
   revision = "1fb7e123c255213216397e132a2aa0dd3b60a737"
 
 [[projects]]
@@ -35,6 +41,12 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
   packages = ["."]
   revision = "a3f95b5c423586578a4e099b11a46c2479628cac"
   version = "1.0.2"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/image"
+  packages = ["font","math/fixed"]
+  revision = "426cfd8eeb6e08ab1932954e09e3c2cb2bc6e36d"
 
 [[projects]]
   branch = "master"
