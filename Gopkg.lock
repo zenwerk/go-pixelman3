@@ -27,8 +27,8 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
 [[projects]]
   branch = "master"
   name = "github.com/hajimehoshi/ebiten"
-  packages = [".","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/loop","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
-  revision = "807d03eb3b3e447af6e637275f9ea0826325a79b"
+  packages = [".","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/math","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
+  revision = "1fb7e123c255213216397e132a2aa0dd3b60a737"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -40,10 +40,10 @@ memo = "4eb4879f8597191aa69d2fde89705217a57a2969551073591d45fefb542d5b9d"
   branch = "master"
   name = "golang.org/x/mobile"
   packages = ["gl"]
-  revision = "683b305bdbdf5901d6d9b094e4948b51a37403a2"
+  revision = "202a52f8eee59fbd0c7471e7a019291bceae2adc"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "0f826bdd13b500be0f1d4004938ad978fcc6031e"
+  revision = "d8f5ea21b9295e315e612b4bcf4bedea93454d4d"
