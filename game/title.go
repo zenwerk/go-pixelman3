@@ -69,7 +69,7 @@ func (t *Title) Update(game *Game) {
 	if ebiten.IsKeyPressed(ebiten.KeyEnter) {
 		switch t.current {
 		case start:
-			game.CurrentState = stage1
+			game.CurrentScene = stage1
 		case exit:
 			os.Exit(0)
 		}

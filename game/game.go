@@ -4,21 +4,22 @@ import (
 	"github.com/hajimehoshi/ebiten"
 
 	"github.com/zenwerk/go-pixelman3/camera"
+	"github.com/zenwerk/go-pixelman3/field"
 )
 
-type StateKey string
+type SceneKey int
 
 const (
-	title  StateKey = "title"
-	stage1 StateKey = "stage1"
+	title SceneKey = iota
+	stage1
 )
 
 type Game struct {
 	ScreenWidth  int
 	ScreenHeight int
 	Camera       *camera.Camera
-	CurrentState StateKey
-	States       map[StateKey]State
+	CurrentScene SceneKey
+	Scenes       map[SceneKey]Scene
 }
 
 func NewGame(width, heigh int) *Game {
@@ -34,21 +35,21 @@ func (g *Game) Init() {
 		Height: g.ScreenHeight,
 	}
 
-	g.States = map[StateKey]State{
+	g.Scenes = map[SceneKey]Scene{
 		title:  NewTitle(),
-		stage1: NewStage1(),
+		stage1: NewStage(field.Level_data_1),
 	}
-	g.CurrentState = title
+	g.CurrentScene = title
 }
 
 func (g *Game) MainLoop(screen *ebiten.Image) error {
-	g.States[g.CurrentState].Update(g)
+	g.Scenes[g.CurrentScene].Update(g)
 
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
 
-	g.States[g.CurrentState].Draw(screen, g.Camera)
+	g.Scenes[g.CurrentScene].Draw(screen, g.Camera)
 
 	return nil
 }
