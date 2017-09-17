@@ -7,7 +7,7 @@ type Camera struct {
 	Width     int // カメラの幅
 	Height    int // カメラの高さ
 	MaxWidth  int // カメラの最大幅
-	MaxHeight int // カメラの最大幅高さ
+	MaxHeight int // カメラの最大高さ
 
 	//XLeftLimit  int // 左方向移動の画面上の限界
 	//XRightLimit int // 右方向移動の画面上の限界

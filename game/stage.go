@@ -26,7 +26,7 @@ func (s *Stage) Update(game *Game) {
 	game.Camera.MaxHeight = s.Field.Height
 	game.Camera.Move(s.Player.Position.X, s.Player.Position.Y)
 
-	s.Player.Move(s.Field.Sprites)
+	s.Player.Move(s.Field.Sprites, s.Field.Width, s.Field.Height)
 	s.Player.Action()
 	s.Player.Balls.Move(game.Camera)
 }

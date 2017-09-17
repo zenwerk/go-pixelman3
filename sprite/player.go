@@ -128,7 +128,7 @@ func (p *Player) jump() {
 	}
 }
 
-func (p *Player) Move(objects []Sprite) {
+func (p *Player) Move(objects []Sprite, maxX, maxY int) {
 	// dx, dy はユーザーの移動方向を保存する
 	var dx, dy int
 	if p.IsKeyPressed(ebiten.KeyLeft) {
@@ -159,6 +159,14 @@ func (p *Player) Move(objects []Sprite) {
 		p.jumpSpeed += p.fallSpeed
 	}
 	dy = round(p.jumpSpeed)
+
+	// 画面端に達していたら移動できない
+	if p.Position.X + dx < 0 || p.Position.X + p.Width() + dx > maxX {
+		dx = 0
+	}
+	if p.Position.Y + dy < 0 || p.Position.Y + p.Height() + dy > maxY {
+		dy = 0
+	}
 
 	if dx != 0 {
 		p.moveX(dx, objects)
