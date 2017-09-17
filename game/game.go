@@ -12,6 +12,8 @@ type SceneKey int
 const (
 	title SceneKey = iota
 	stage1
+	stage2
+	ending
 )
 
 type Game struct {
@@ -37,7 +39,8 @@ func (g *Game) Init() {
 
 	g.Scenes = map[SceneKey]Scene{
 		title:  NewTitle(),
-		stage1: NewStage(field.Level_data_1),
+		stage1: NewStage(field.Level_data_1, stage2),
+		stage2: NewStage(field.Level_data_2, ending),
 	}
 	g.CurrentScene = title
 }

@@ -11,11 +11,13 @@ import (
 type Stage struct {
 	Field  *field.Field
 	Player *sprite.Player
+	next   SceneKey
 }
 
-func NewStage(level string) *Stage {
+func NewStage(level string, nextScene SceneKey) *Stage {
 	st := &Stage{}
 	st.Field, st.Player = field.NewField(level)
+	st.next = nextScene
 	return st
 }
 
