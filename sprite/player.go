@@ -103,14 +103,14 @@ type state struct {
 
 type Player struct {
 	BaseSprite
+	Balls      Balls
+	State      *state  // 現在の状態
 	jumping    bool    // 現在ジャンプ中か
 	jumpSpeed  float64 // 現在のジャンプ力
 	fallSpeed  float64 // 落下速度
-	Balls      Balls
 	Speed      float64 // 現在のスピード
 	AccelSpeed float64 // 加速度
 	MaxSpeed   float64 // 最大速度
-	State      *state  // 現在の状態
 }
 
 func NewPlayer() *Player {

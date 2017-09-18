@@ -41,6 +41,7 @@ func (g *Game) Init() {
 		title:  NewTitle(),
 		stage1: NewStage(field.Level_data_1, stage2),
 		stage2: NewStage(field.Level_data_2, ending),
+		ending: NewEnding(),
 	}
 	g.CurrentScene = title
 }
