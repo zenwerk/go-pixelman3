@@ -29,6 +29,11 @@ func (s *Stage) Update(game *Game) {
 	s.Player.Move(s.Field.Sprites, s.Field.Width, s.Field.Height)
 	s.Player.Action()
 	s.Player.Balls.Move(game.Camera)
+
+	// 次のステージへ進む
+	if s.Player.State.ArrivedAtNextPoint {
+		game.CurrentScene = s.next
+	}
 }
 
 func (s *Stage) Draw(screen *ebiten.Image, camera *camera.Camera) {

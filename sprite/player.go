@@ -38,11 +38,11 @@ const (
 --++++--+++--++-
 ---+++++++++++--
 ----++++++++----
---++++++++++++--
+---++++++++++---
 --++-++++++-++--
 --++-++++++--++-
 --++-++++++---++
----++++++++-----
+-++--++++++-----
 -----++--++-----
 ----++----++----
 ---++------++---
@@ -55,11 +55,11 @@ const (
 --++++--+++--++-
 ---+++++++++++--
 ----++++++++----
----+++++++++++--
+---++++++++++---
 --++-++++++-++--
 --++-++++++-++--
 --++-++++++--++-
---+--++++++---++
+---++++++++---++
 ----++----++----
 ---++------++---
 -+++--------++--
@@ -94,6 +94,13 @@ func round(f float64) int {
 	return int(math.Floor(f + .5))
 }
 
+// state はゲーム全体に関連するプレイヤーの状態を保存する
+type state struct {
+	ArrivedAtNextPoint bool // 次のステージへ移動するか
+	//RemainingLives     int  // 残機
+	//Point              int  // 取得ポイント
+}
+
 type Player struct {
 	BaseSprite
 	jumping    bool    // 現在ジャンプ中か
@@ -103,6 +110,7 @@ type Player struct {
 	Speed      float64 // 現在のスピード
 	AccelSpeed float64 // 加速度
 	MaxSpeed   float64 // 最大速度
+	State      *state  // 現在の状態
 }
 
 func NewPlayer() *Player {
@@ -118,6 +126,7 @@ func NewPlayer() *Player {
 	player.keyPressed = make(map[ebiten.Key]bool)
 	player.AccelSpeed = 0.25
 	player.MaxSpeed = 3.0
+	player.State = &state{}
 	return player
 }
 
@@ -161,10 +170,10 @@ func (p *Player) Move(objects []Sprite, maxX, maxY int) {
 	dy = round(p.jumpSpeed)
 
 	// 画面端に達していたら移動できない
-	if p.Position.X + dx < 0 || p.Position.X + p.Width() + dx > maxX {
+	if p.Position.X+dx < 0 || p.Position.X+p.Width()+dx > maxX {
 		dx = 0
 	}
-	if p.Position.Y + dy < 0 || p.Position.Y + p.Height() + dy > maxY {
+	if p.Position.Y+dy < 0 || p.Position.Y+p.Height()+dy > maxY {
 		dy = 0
 	}
 
@@ -219,6 +228,8 @@ func (p *Player) Collision(object Sprite, dx, dy int) {
 		p.collideBlock(v, dx, dy)
 	case *Coin:
 		p.collideCoin(v)
+	case *NextPoint:
+		p.collideNextPoint(v)
 	default:
 		log.Warn("unknown type")
 	}
@@ -251,4 +262,11 @@ func (p *Player) collideBlock(b *Block, dx, dy int) {
 
 func (p *Player) collideCoin(c *Coin) {
 	c.Alive = false
+}
+
+func (p *Player) collideNextPoint(np *NextPoint) {
+	// 到達したら次のステージに進む
+	if p.Position.X+p.Width() >= np.Position.X+np.Width() {
+		p.State.ArrivedAtNextPoint = true
+	}
 }
