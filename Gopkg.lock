@@ -1,16 +1,16 @@
-memo = "c10517391a722f4ffe7771a3b7ae7f4acd5e2755774d423e72887be5297fe262"
+memo = "34b95e8f103f80b86431a0a4a58ef55977ca579811e5d9f000f7f48d6d06aaff"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-gl/gl"
   packages = ["v2.1/gl"]
-  revision = "39ef8e959f4050148ec5a59816a93b9e65b4528f"
+  revision = "ac0d3d2af0fe995e2bb09fa6619b716b0c0fc0fa"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
-  revision = "222b83c41c19cc975bfbf6f2611f3a97bde91a56"
+  revision = "513e4f2bf85c31fba0fc4907abd7895242ccbe50"
 
 [[projects]]
   branch = "master"
@@ -22,7 +22,7 @@ memo = "c10517391a722f4ffe7771a3b7ae7f4acd5e2755774d423e72887be5297fe262"
   branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js","nosync"]
-  revision = "2b1d432c8a82c9bff0b0baffaeb3ec6e92974112"
+  revision = "b40cd48c38f9a18eb3db20d163bad78de12cf0b7"
 
 [[projects]]
   branch = "master"
@@ -33,29 +33,35 @@ memo = "c10517391a722f4ffe7771a3b7ae7f4acd5e2755774d423e72887be5297fe262"
 [[projects]]
   branch = "master"
   name = "github.com/hajimehoshi/ebiten"
-  packages = [".","ebitenutil","ebitenutil/internal/assets","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/math","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web"]
-  revision = "1fb7e123c255213216397e132a2aa0dd3b60a737"
+  packages = [".","ebitenutil","ebitenutil/internal/assets","internal","internal/affine","internal/clock","internal/endian","internal/graphics","internal/jni","internal/math","internal/opengl","internal/restorable","internal/sync","internal/ui","internal/web","text"]
+  revision = "0831fd2a0dbadc8717415d4ff9fcd7548b226f48"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
   packages = ["."]
-  revision = "a3f95b5c423586578a4e099b11a46c2479628cac"
-  version = "1.0.2"
+  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
+  version = "v1.0.3"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "7d9177d70076375b9a59c8fde23d52d9c4a7ecd5"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/image"
   packages = ["font","math/fixed"]
-  revision = "426cfd8eeb6e08ab1932954e09e3c2cb2bc6e36d"
+  revision = "e20db36d77bd0cb36cea8fe49d5c37d82d21591f"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/mobile"
   packages = ["gl"]
-  revision = "202a52f8eee59fbd0c7471e7a019291bceae2adc"
+  revision = "e095d655c7b68388a6d3e926d508f5f3b42b3e71"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "d8f5ea21b9295e315e612b4bcf4bedea93454d4d"
+  revision = "062cd7e4e68206d8bab9b18396626e855c992658"
