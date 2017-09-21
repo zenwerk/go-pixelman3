@@ -97,8 +97,8 @@ func round(f float64) int {
 // state はゲーム全体に関連するプレイヤーの状態を保存する
 type state struct {
 	ArrivedAtNextPoint bool // 次のステージへ移動するか
-	//RemainingLives     int  // 残機
-	//Point              int  // 取得ポイント
+	RemainingLives     int  // 残機
+	Point              int  // 取得ポイント
 }
 
 type Player struct {
