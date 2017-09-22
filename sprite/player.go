@@ -261,7 +261,10 @@ func (p *Player) collideBlock(b *Block, dx, dy int) {
 }
 
 func (p *Player) collideCoin(c *Coin) {
-	c.Alive = false
+	if c.Alive {
+		c.Alive = false
+		p.State.Point += 10
+	}
 }
 
 func (p *Player) collideNextPoint(np *NextPoint) {

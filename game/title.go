@@ -50,12 +50,14 @@ func init() {
 }
 
 type Title struct {
+	key     SceneKey
 	current int
 }
 
 func NewTitle() *Title {
 	return &Title{
 		current: start,
+		key:     title,
 	}
 }
 
@@ -87,4 +89,8 @@ func (t *Title) Draw(screen *ebiten.Image, _ *camera.Camera) {
 
 	text.Draw(screen, "start", mplusNormalFont, 100, 100, startColor)
 	text.Draw(screen, "exit", mplusNormalFont, 100, 150, exitColor)
+}
+
+func (t *Title) SceneKey() SceneKey {
+	return t.key
 }

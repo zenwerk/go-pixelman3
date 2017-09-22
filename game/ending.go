@@ -46,11 +46,13 @@ func init() {
 }
 
 type Ending struct {
+	key     SceneKey
 	current int
 }
 
 func NewEnding() *Ending {
 	return &Ending{
+		key:     ending,
 		current: start,
 	}
 }
@@ -84,4 +86,8 @@ func (e *Ending) Draw(screen *ebiten.Image, _ *camera.Camera) {
 	text.Draw(screen, "Clear! Congratulations!", mplusNormalFont, 20, 50, utils.Yellow)
 	text.Draw(screen, "restart", mplusNormalFont, 100, 100, restartColor)
 	text.Draw(screen, "end", mplusNormalFont, 100, 150, endColor)
+}
+
+func (e *Ending) SceneKey() SceneKey {
+	return e.key
 }

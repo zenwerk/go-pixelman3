@@ -9,6 +9,7 @@ import (
 
 	"github.com/zenwerk/go-pixelman3/camera"
 	"github.com/zenwerk/go-pixelman3/field"
+	"github.com/zenwerk/go-pixelman3/sprite"
 )
 
 type SceneKey int
@@ -59,14 +60,18 @@ func (g *Game) Init() {
 
 	g.Scenes = map[SceneKey]Scene{
 		title:  NewTitle(),
-		stage1: NewStage(field.Level_data_1, stage2),
-		stage2: NewStage(field.Level_data_2, ending),
+		stage1: NewStage(field.Level_data_1, stage1, stage2),
+		stage2: NewStage(field.Level_data_2, stage2, ending),
 		ending: NewEnding(),
 	}
 	g.CurrentScene = title
 }
 
-func (g *Game) DrawStatus(screen *ebiten.Image) {
+func (g *Game) GetCurrentScene() Scene {
+	return g.Scenes[g.CurrentScene]
+}
+
+func (g *Game) DrawStatus(screen *ebiten.Image, player *sprite.Player) {
 	stage := ""
 	switch g.CurrentScene {
 	case stage1:
@@ -78,21 +83,31 @@ func (g *Game) DrawStatus(screen *ebiten.Image) {
 	now := time.Now().Truncate(time.Nanosecond)
 	elapsedTime := now.Sub(g.PState.StartTime.Truncate(time.Nanosecond))
 
-	str := fmt.Sprintf(" Score:%d        Lives:%d        State:%s      Time:%.0f",
-		g.PState.Point, g.PState.RemainingLives, stage, elapsedTime.Seconds())
+	str := fmt.Sprintf(" Score:%d        Lives:%d        Stage:%s      Time:%.0f",
+		g.PState.Point+player.State.Point,
+		g.PState.RemainingLives,
+		stage,
+		elapsedTime.Seconds())
 	ebitenutil.DebugPrint(screen, str)
 }
 
 func (g *Game) MainLoop(screen *ebiten.Image) error {
-	g.Scenes[g.CurrentScene].Update(g)
+	scene := g.GetCurrentScene()
+	scene.Update(g)
+
+	// プレイヤーの状態を取得する
+	p := &sprite.Player{}
+	if s, ok := scene.(GetPlayer); ok {
+		p = s.GetPlayer()
+	}
 
 	if ebiten.IsRunningSlowly() {
 		return nil
 	}
 
-	g.Scenes[g.CurrentScene].Draw(screen, g.Camera)
-	if g.CurrentScene != title && g.CurrentScene != ending {
-		g.DrawStatus(screen)
+	scene.Draw(screen, g.Camera)
+	if scene.SceneKey() != title && scene.SceneKey() != ending {
+		g.DrawStatus(screen, p)
 	}
 
 	return nil
