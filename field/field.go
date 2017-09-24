@@ -17,6 +17,7 @@ const (
 	playerMark    = "P"
 	coinMark      = "C"
 	nextPointMark = "N"
+	spikesMark    = "^"
 )
 
 type Field struct {
@@ -55,6 +56,11 @@ func NewField(fieldData string) (*Field, *sprite.Player) {
 				nextPoint.Position.X = indexX * width
 				nextPoint.Position.Y = indexY * width
 				field.Sprites = append(field.Sprites, nextPoint)
+			case spikesMark:
+				spikes := sprite.NewSpikes()
+				spikes.Position.X = indexX * width
+				spikes.Position.Y = indexY * height
+				field.Sprites = append(field.Sprites, spikes)
 			}
 			counter++
 		}

@@ -108,6 +108,11 @@ func (g *Game) MainLoop(screen *ebiten.Image) error {
 	scene.Draw(screen, g.Camera)
 	if scene.SceneKey() != title && scene.SceneKey() != ending {
 		g.DrawStatus(screen, p)
+
+		if p.State.ArrivedAtNextPoint {
+			g.PState.Point += p.State.Point
+			g.PState.RemainingLives = p.State.RemainingLives
+		}
 	}
 
 	return nil

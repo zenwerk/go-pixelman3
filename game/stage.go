@@ -9,17 +9,17 @@ import (
 )
 
 type Stage struct {
-	Field     *field.Field
-	Player    *sprite.Player
-	key       SceneKey
-	NextScene SceneKey
+	Field  *field.Field
+	Player *sprite.Player
+	key    SceneKey
+	next   SceneKey
 }
 
 func NewStage(level string, key, nextScene SceneKey) *Stage {
 	st := &Stage{}
 	st.Field, st.Player = field.NewField(level)
 	st.key = key
-	st.NextScene = nextScene
+	st.next = nextScene
 	return st
 }
 
@@ -34,7 +34,7 @@ func (s *Stage) Update(game *Game) {
 
 	// 次のステージへ進む
 	if s.Player.State.ArrivedAtNextPoint {
-		game.CurrentScene = s.NextScene
+		game.CurrentScene = s.next
 	}
 }
 
